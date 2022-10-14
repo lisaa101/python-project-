@@ -1,0 +1,229 @@
+
+#imports 
+import turtle
+import time
+import random
+import os
+#set up of the screen
+wn = turtle.Screen()
+wn.title("Catch the Turtles")
+wn.setup(width=600, height=400)
+wn.tracer(0)
+
+#set up of the turtle
+trtl = turtle.Turtle()
+trtl.hideturtle()
+trtl.goto(0,0)
+
+
+#set up of the screen
+trtl.write("WELCOME",font=("Arial", 20, 'bold', 'underline'))
+
+#First question
+start_game = input("Hello! Today we are going to catch some turtles, do you want to play?(yes or no)\n")
+
+#Conditional statement for if the user wants to play the game or not.
+if start_game != "yes":
+  print("No game for you :(")
+  retry =input("Do you change your mind?(yes or no) \n")
+  while retry != "yes":
+    trtl.clear()
+    trtl.write("Game Over",font=("Arial", 20, 'bold', 'underline'))
+    time.sleep(3)
+    trtl.clear()
+    os.system('clear')
+    
+else:
+  print("Let's get started!")
+  continue_game = True# Condition for the while loop to run.
+
+trtl.clear()
+
+#Question for background. 
+background = input("\n Where do you want to catch your turtles? In the sea or on land?\n")
+
+#Conditional statement for the background change to either blue or green.
+if "sea" in background:
+  wn.bgcolor("skyblue")
+  
+elif "land" in background:
+  wn.bgcolor("light green")
+
+#Question to change the turtles color.
+turtle_color = input("\n What color do you want your main turtle to be? (red or green) \n")
+
+  
+#Border area to show limit of where the turtles can go.
+border = turtle.Turtle()
+border.hideturtle()
+border.penup()
+border.goto(-290, -180)
+border.pendown()
+border.forward(600)
+border.left(90)
+border.forward(400)
+border.left(90)
+border.forward(600)
+border.left(90)
+border.forward(400)
+
+#The main turtle (turtle_body)
+turtle_body = turtle.Turtle()
+turtle_body.speed(1)
+turtle_body.setheading(90)
+turtle_body.shape("turtle")
+turtle_body.color(turtle_color)
+turtle_body.penup()
+turtle_body.goto(0,0)
+turtle_body.direction = "stop"
+
+#The turtles that need to be caught(loose_turtles)
+loose_turtles= turtle.Turtle()
+loose_turtles.speed(0)
+loose_turtles.setheading(90)
+loose_turtles.shape("turtle")
+loose_turtles.color("Black")
+loose_turtles.penup()
+x = random.randint(-280,280)
+y = random.randint(-170,170)
+loose_turtles.goto(x,y)
+
+#conditional to change the turtles color.
+if turtle_color == "red":
+  loose_turtles.color("yellow")
+
+elif turtle_color == "green":
+  loose_turtles.color("red")
+
+
+
+new_turtles = []
+
+#Functions for the turtles to go up,down, left, and right.
+def go_up(): #goes upward on the screen
+    if turtle_body.direction != "down":
+        turtle_body.direction = "up"
+def go_down():
+    if turtle_body.direction != "up":
+        turtle_body.direction = "down"
+def go_left():
+    if turtle_body.direction != "right":
+        turtle_body.direction = "left"
+def go_right():
+    if turtle_body.direction != "left":
+        turtle_body.direction = "right"
+def move():
+    if turtle_body.direction == "up":
+        y = turtle_body.ycor()
+        turtle_body.sety(y+20)
+    if turtle_body.direction == "down":
+        y = turtle_body.ycor()
+        turtle_body.sety(y-20)
+    if turtle_body.direction == "left":
+        x = turtle_body.xcor()
+        turtle_body.setx(x-20)
+    if turtle_body.direction == "right":
+        x = turtle_body.xcor()
+        turtle_body.setx(x+20)
+
+#Moving the turtles with the keybord keys. 
+wn.listen()
+wn.onkeypress(go_up, 'Up')
+wn.onkeypress(go_down, 'Down')
+wn.onkeypress(go_left, 'Left')
+wn.onkeypress(go_right, 'Right')
+
+#Stating how to play and what will make the gamer lose the game.
+print("\nYou can start now just click on the screen with the turtles, then use your arrow keys to catch the turtles! \n \nA few things to remember: \n \t 1.For this game you need to catch the red turtles and make then green. \n \t 2.If you touch the borders you will lose. \n \t 3.If you touch the turtles itself you will lose. \n ")
+
+#The main functions of the game in a while loop statement.
+while continue_game == True:
+    wn.update()
+    time.sleep(0.1)
+    #check collision with border area
+    if turtle_body.xcor()>290 or turtle_body.xcor()<-290 or turtle_body.ycor()>180 or turtle_body.ycor()<-180:
+      trtl.goto(-50,0)
+      trtl.write("You lost :(",font=("Arial", 20, 'bold'))
+      continue_game = False
+      play_again = input("Do you want to play again? \n")
+      # if user wants to play again then contunue game will be true. 
+      if play_again == "yes":
+        continue_game = True
+        time.sleep(3)
+        trtl.clear()
+        turtle_body.goto(0,0)
+        turtle_body.direction = "stop"
+        for my_turtles in new_turtles:#hide the turtles that hit the border
+            my_turtles.goto(1000,1000) #out of range
+        #clear the new_turtles
+        new_turtles.clear()
+
+    #Check collision with loose_turtles
+    if turtle_body.distance(loose_turtles) <20:
+        #Moveing the loose_turtles to a random place within the range of the game.
+        x = random.randint(-280,280)
+        y = random.randint(-170,170)
+        loose_turtles.goto(x,y)
+    for my_turtles in new_turtles:
+        #Adding a added_turtles to the turtle_body
+        added_turtles = turtle.Turtle()
+        #conditional statement for color change for turtles.
+        if turtle_color == "red":
+          added_turtles.color("blue")
+        elif turtle_color == "green":
+          added_turtles.color("yellow")
+        added_turtles.speed(0)
+        added_turtles.setheading(90)
+        added_turtles.shape("turtle")
+        added_turtles.penup()
+        new_turtles.append(added_turtles)
+
+    #Moveing the new_turtles in reverse using the for statement.
+    for index in range(len(new_turtles)-1,0,-1):
+        x = new_turtles[index-1].xcor()
+        y = new_turtles[index-1].ycor()
+        new_turtles[index].goto(x,y)
+      
+    #Moving the new_turtles so they follow the original turtle.
+    if len(new_turtles)>0:
+        x = turtle_body.xcor()
+        y = turtle_body.ycor()
+        added_turtles.goto(x,y)
+
+    move()
+
+    #Checking for if the body of turtles touch(for loop) 
+    for my_turtles in new_turtles:
+        if my_turtles.distance(turtle_body)<20:
+          trtl.goto(-50,0)
+          trtl.write("You lost :(",font=("Arial", 20, 'bold'))
+          continue_game = False
+          play_again = input("Do you want to play again? \n")
+          if play_again == "yes":
+            continue_game = True
+            time.sleep(0)
+            trtl.clear()
+            turtle_body.goto(0,0)
+            turtle_body.direction = "stop"
+            #Hiding new_turtles so they are not in view of the game. 
+            for added_turtles in new_turtles:
+                new_turtles.clear()
+          else:
+            continue_game = False
+              
+if continue_game == False:
+  print("In if contimnue game")
+  for my_turtles in new_turtles:
+    print("In for loop")
+    loose_turtles.goto(100,100)
+    added_turtles.hideturtle()
+    for turtle_body in range (-280,280):
+      turtle_body.goto(1000,1000)
+      wn.bgcolor("white")
+      border.clear()
+      trtl.clear()
+      trtl.write("Game Over",font=("Arial", 20, 'bold'))
+      
+      
+              
+wn.mainloop()   
